@@ -159,7 +159,7 @@ export default function Home() {
   };
 
   const handleSubmit = async (e: any) => {
-    if (e.code === "Enter" && city != undefined) {
+    if (city != undefined) {
       setCity("");
       getMapAndWeather(city);
     }
@@ -182,7 +182,7 @@ export default function Home() {
           type="text"
           className="search-box"
           placeholder="Search..."
-          onKeyDown={handleSubmit}
+          onSubmit={handleSubmit}
           value={city}
           onChange={(e) => setCity(e.target.value)}
         />
