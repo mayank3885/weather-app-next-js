@@ -46,6 +46,7 @@ body {
   align-items: center;
   font-size: 1.5rem;
   padding: 0 7%;
+  z-index: 2;
 }
 
 .header li {
@@ -59,6 +60,7 @@ footer {
   color: white;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .map {
@@ -222,4 +224,63 @@ input::after {
   [type="checkbox"]:checked + label:before {
     content: "Show Less";
   }
+}
+
+.toast-container {
+  position: absolute;
+}
+
+.about .mayank {
+  height: 100vh;
+  width: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  object-position: 40%;
+  position: absolute;
+  top: 0;
+}
+
+.about .content {
+  position: absolute;
+  width: 40vw;
+  min-width: 250px;
+  max-width: 500px;
+  right: 6%;
+  top: 15%;
+  background: #55c7fff0;
+  border-radius: 5%;
+  box-shadow: 0px 0px 6px 1px;
+  color: white;
+  padding: 2%;
+  overflow: auto;
+  max-height: 65vh;
+}
+
+.about h2 {
+  font-size: 28px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.about li {
+  font-size: 15px;
+  margin-bottom: 5%;
+  font-weight: 400;
+  text-align: justify;
+}
+
+.social a img {
+  width: 35%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.social {
+  display: flex;
+}
+
+.social a {
+  display: flex;
+  justify-content: center;
 }

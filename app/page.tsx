@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl";
-
+import { toast } from "react-toastify";
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 export default function Home() {
@@ -13,6 +13,7 @@ export default function Home() {
   const [city, setCity] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isInitialRender, setIsInitialRender] = useState(true);
   const [weather, setWeather] = useState<{
     temp: number;
     feels_like: number;
@@ -40,27 +41,36 @@ export default function Home() {
       center: [lng, lat],
       zoom: zoom,
     });
+    try {
+      map.current?.on("click", async (e: any) => {
+        setLng(e.lngLat.lng.toFixed(4));
+        setLat(e.lngLat.lat.toFixed(4));
+        setZoom(map.current?.getZoom().toFixed(2));
 
-    map.current?.on("click", async (e: any) => {
-      setLng(e.lngLat.lng.toFixed(4));
-      setLat(e.lngLat.lat.toFixed(4));
-      setZoom(map.current?.getZoom().toFixed(2));
-
-      const data = await fetchAPI(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toFixed(
-          4
-        )},${e.lngLat.lat.toFixed(4)}.json?access_token=${
-          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-        }`,
-        {
-          method: "GET",
-        }
-      );
-      setLocation(data.features[0].place_name);
-    });
+        const data = await fetchAPI(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toFixed(
+            4
+          )},${e.lngLat.lat.toFixed(4)}.json?access_token=${
+            process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+          }`,
+          {
+            method: "GET",
+          }
+        );
+        setLocation(data.features[0]?.place_name);
+      });
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   });
 
   useEffect(() => {
+    if (isInitialRender) {
+      getMapAndWeather("Ahmedabad");
+      setIsInitialRender(false);
+      return;
+    }
+
     getMapAndWeather(location);
   }, [location]);
 
@@ -73,14 +83,14 @@ export default function Home() {
       return ans;
     } catch (error) {
       setLoading(false);
-      //toast error message
+      toast.error("Something went wrong");
     }
   };
 
   const selectGif = (temp: Number) => {
     const main = document.querySelector("body");
-    while (main?.classList.length > 0) {
-      main?.classList.remove(main.classList.item(0));
+    while (main?.classList.length! > 0) {
+      main?.classList.remove(main.classList.item(0)!);
     }
     if (temp.valueOf() < 5) {
       main?.classList.add("ice");
@@ -95,6 +105,9 @@ export default function Home() {
 
   const getMapAndWeather = async (placeName: string) => {
     try {
+      if (placeName === undefined || placeName === "") {
+        throw new Error("placeName is undefined");
+      }
       const mapAPI = await fetchAPI(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${placeName}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
         {
@@ -132,11 +145,11 @@ export default function Home() {
           });
         }
       } else {
-        console.log("No results found"); //use toast here
+        toast.error("No Results Found");
       }
     } catch (e) {
       setLoading(false);
-      console.log(e); //use toast here
+      toast.error("Place Name cannot be undefined");
     }
   };
 
