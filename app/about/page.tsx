@@ -33,10 +33,10 @@ export default function About() {
           </li>
         </ul>
         <div className="social">
-          <Link href="https://github.com/mayank3885">
+          <Link href="https://github.com/mayank3885" target="blank">
             <Image src={githubLogo} className="github" alt="github" />
           </Link>
-          <Link href="https://www.linkedin.com/in/mayank-makwana-792a461b9/">
+          <Link href="https://www.linkedin.com/in/mayank-makwana-792a461b9/" target="blank">
             <Image src={linkedInLogo} className="linkedin" alt="linked in" />
           </Link>
         </div>

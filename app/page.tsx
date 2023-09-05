@@ -1,15 +1,17 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
-import mapboxgl from "!mapbox-gl";
+import mapboxgl from "mapbox-gl";
 import { toast } from "react-toastify";
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+if (process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN) {
+  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+}
 
 export default function Home() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng, setLng] = useState(72.5);
   const [lat, setLat] = useState(23);
-  const [zoom, setZoom] = useState(9);
+  const [zoom, setZoom] = useState<number>(9);
   const [city, setCity] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,14 +31,15 @@ export default function Home() {
     sunrise: 0,
     sunset: 0,
   });
+
   const [mapData, setMapData] = useState<{ place_name: string }>({
     place_name: "",
   });
 
   useEffect(() => {
-    if (map.current) return;
+    if (map.current || !mapContainer.current) return;
     map.current = new mapboxgl.Map({
-      container: mapContainer.current,
+      container: mapContainer.current as HTMLElement,
       style: "mapbox://styles/mapbox/streets-v12",
       center: [lng, lat],
       zoom: zoom,
@@ -45,7 +48,9 @@ export default function Home() {
       map.current?.on("click", async (e: any) => {
         setLng(e.lngLat.lng.toFixed(4));
         setLat(e.lngLat.lat.toFixed(4));
-        setZoom(map.current?.getZoom().toFixed(2));
+        const zoomValueString = map.current?.getZoom().toFixed(2);
+        const zoomValue = parseFloat(zoomValueString || "0");
+        setZoom(zoomValue);
 
         const data = await fetchAPI(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toFixed(
