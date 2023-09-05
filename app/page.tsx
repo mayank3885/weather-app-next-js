@@ -159,6 +159,8 @@ export default function Home() {
   };
 
   const handleSubmit = async (e: any) => {
+    console.log(e.code);
+    e.preventDefault();
     if (city != undefined) {
       setCity("");
       getMapAndWeather(city);
@@ -178,14 +180,15 @@ export default function Home() {
       <div className={loading ? "spinner" : ""}></div>
       <div className={loading ? "opaque" : "map-container"}>
         <div ref={mapContainer} className="map" />
-        <input
-          type="text"
-          className="search-box"
-          placeholder="Search..."
-          onSubmit={handleSubmit}
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            className="search-box"
+            placeholder="Search..."
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+        </form>
         <div className="sidebar">
           <ul>
             <li>Location: {mapData.place_name}</li>
