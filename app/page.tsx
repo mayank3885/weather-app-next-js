@@ -159,7 +159,6 @@ export default function Home() {
   };
 
   const handleSubmit = async (e: any) => {
-    console.log(e.code);
     e.preventDefault();
     if (city != undefined) {
       setCity("");
